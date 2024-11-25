@@ -2,6 +2,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import React from "react";
+import AnimatedTitle from "./AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,13 +29,15 @@ const AboutSection = () => {
 			<main
 				id='about'
 				className='w-screen min-h-screen'>
-				<div className='relative mb-8 mt-36 flex flex-col text-center items-center gap-5'>
+				<div className='relative mb-8 mt-32 flex flex-col text-center items-center gap-5'>
 					<h2 className='font-general text-sm uppercase md:text-[15px]'>
 						Welcome To The Great City of Demacia
 					</h2>
-					<div className='mt-5 text-3xl special-font font-zentry  md:text-6xl'>
-						Dem<b>a</b>cia <br /> is <b>a</b> kingdom in <br /> turmoil.
-					</div>
+
+					<AnimatedTitle
+						title='Dem<b>a</b>cia <br /> is <b>a</b> kingdom in <br /> turmoil.'
+						containerClass='mt-5 text-3xl special-font font-zentry  md:text-6xl'
+					/>
 					<div className='about-subtext font-serif text-sm md:text-base '>
 						<p className='tracking-wide leading-7 font-robert-medium'>
 							However, the sudden death of LoR Non-Champion Indicator{" "}

@@ -1,49 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ButtonIcon from "./ButtonIcon";
 import { FaLocationArrow } from "react-icons/fa";
-import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const HeroSection = () => {
-	const [index, setIndex] = useState(1);
 	const [loading, setLoading] = useState(true);
+	const [loadedVideos, setLoadedVideos] = useState(0);
+
+	const totalVideos = 1;
+	const videoFrameRef = useRef(null);
 
 	useEffect(() => {
-		// Set loading to true after 3 seconds using setTimeout
-		const loadingTimeout = setTimeout(() => {
+		if (loadedVideos === totalVideos - 1) {
 			setLoading(false);
-		}, 3000);
+		}
+	}, [loadedVideos]);
+	const handleVideoLoad = () => {
+		setLoadedVideos((prev) => prev + 1);
+	};
 
-		// Set interval to change video index every 9 seconds
-		const intervalId = setInterval(() => {
-			setIndex((prevIndex) => (prevIndex >= 4 ? 1 : prevIndex + 1));
-		}, 9000);
+	useEffect(() => {
+		if (!loading) {
+			const videoFrame = videoFrameRef.current;
 
-		// Cleanup function to clear the interval and timeout if the component unmounts
-		return () => {
-			clearTimeout(loadingTimeout); // clearTimeout for loading timeout
-			clearInterval(intervalId); // clearInterval for video cycling
-		};
-	}, []);
-	useGSAP(() => {
-		gsap.set("#video-frame", {
-			clipPath: "polygon(14% 0%, 72% 0%, 90% 90%, 0% 100%)",
-			borderRadius: "0 0 40% 10%",
-		});
-		gsap.from("#video-frame", {
-			clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-			borderRadius: "0% 0% 0% 0%",
-			ease: "power1.inOut",
-			scrollTrigger: {
-				trigger: "#video-frame",
-				start: "center center",
-				end: "bottom center",
-				scrub: true,
-			},
-		});
-	});
+			gsap.set(videoFrame, {
+				clipPath: "polygon(14% 0%, 72% 0%, 90% 90%, 0% 100%)",
+				borderRadius: "0 0 40% 10%",
+			});
+
+			gsap.from(videoFrame, {
+				clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+				borderRadius: "0 0 0 0",
+				ease: "power1.inOut",
+				scrollTrigger: {
+					trigger: videoFrame,
+					start: "center center",
+					end: "bottom center",
+					scrub: true,
+				},
+			});
+		}
+	}, [loading]);
+
 	return (
 		<>
 			<div className='w-screen min-h-screen relative overflow-x-hidden'>
@@ -58,13 +59,14 @@ const HeroSection = () => {
 				) : (
 					<>
 						<div
-							id='video-frame'
+							ref={videoFrameRef}
 							className='relative w-screen h-dvh z-10 overflow-hidden rounded-lg bg-blue-75'>
 							<video
-								src={`videos/hero-${index}.mp4`}
+								src={"videos/hero-1.mp4"}
 								autoPlay
 								loop
 								muted
+								onLoadedData={handleVideoLoad}
 								className='absolute top-0 left-0 size-full object-center object-cover'
 							/>
 
