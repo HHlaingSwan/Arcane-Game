@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import ButtonIcon from "./ButtonIcon";
 
 import { SiAmazonluna } from "react-icons/si";
 import { useWindowScroll } from "react-use";
@@ -40,16 +39,8 @@ const NavBar = () => {
 				className='fixed inset-x-0 top-4 z-50 h-16 border-none transition-all duration-700 ease-in-out sm:inset-x-6'>
 				<header className='absolute top-1/2 w-full -translate-y-1/2'>
 					<nav className='flex size-full items-center justify-between p-4'>
-						<div className='flex gap-5 items-center'>
-							{/* w-10 */}
-							<ButtonIcon
-								title='Products'
-								icon={<SiAmazonluna />}
-								containerClass='bg-blue-50 hidden md:flex items-center gap-4 justify-center'
-							/>
-						</div>
 						<div className='h-full flex items-center'>
-							<div className='hidden md:block '>
+							<div className='flex md:block '>
 								{navItem.map((item) => (
 									<a
 										key={item}
@@ -58,6 +49,13 @@ const NavBar = () => {
 									</a>
 								))}
 							</div>
+						</div>
+						<div className='flex gap-5 items-center'>
+							{/* w-10 */}
+							<button className='bg-blue-50 flex px-4 py-2 rounded-full items-center gap-3 justify-center font-zentry text-base'>
+								<SiAmazonluna />
+								{""} Products
+							</button>
 						</div>
 					</nav>
 				</header>

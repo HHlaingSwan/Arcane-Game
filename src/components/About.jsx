@@ -6,7 +6,7 @@ import AnimatedTitle from "./AnimatedTitle";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const AboutSection = () => {
+const About = () => {
 	useGSAP(() => {
 		const clipAnimation = gsap.timeline({
 			scrollTrigger: {
@@ -63,4 +63,4 @@ const AboutSection = () => {
 	);
 };
 
-export default AboutSection;
+export default About;

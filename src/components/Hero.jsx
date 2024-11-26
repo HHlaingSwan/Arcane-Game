@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/all";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const HeroSection = () => {
+const Hero = () => {
 	const [loading, setLoading] = useState(true);
 	const [loadedVideos, setLoadedVideos] = useState(0);
 
@@ -100,4 +100,4 @@ const HeroSection = () => {
 	);
 };
 
-export default HeroSection;
+export default Hero;
