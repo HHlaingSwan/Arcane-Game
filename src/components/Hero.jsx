@@ -3,26 +3,11 @@ import ButtonIcon from "./ButtonIcon";
 import { FaLocationArrow } from "react-icons/fa";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import vd1 from "../assets/feature-1.mp4";
-import vd2 from "../assets/feature-2.mp4";
-import vd3 from "../assets/feature-3.mp4";
-import vd4 from "../assets/feature-4.mp4";
-import vd5 from "../assets/feature-5.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Hero = ({ onVideoLoad }) => {
-	const [currentVideo, setCurrentVideo] = useState(0);
+const Hero = () => {
 	const videoFrameRef = useRef(null);
-	const videos = [vd1, vd2, vd3, vd4, vd5];
-
-	const handleVideoLoad = () => {
-		onVideoLoad();
-	};
-
-	const handleVideoEnded = () => {
-		setCurrentVideo((prev) => (prev + 1) % videos.length);
-	};
 
 	useEffect(() => {
 		const videoFrame = videoFrameRef.current;
@@ -45,15 +30,6 @@ const Hero = ({ onVideoLoad }) => {
 		});
 	}, []);
 
-	useEffect(() => {
-		// Preload the next video
-		const nextVideoIndex = (currentVideo + 1) % videos.length;
-		const nextVideoSrc = videos[nextVideoIndex];
-		const video = document.createElement("video");
-		video.src = nextVideoSrc;
-		video.preload = "auto";
-	}, [currentVideo, videos]);
-
 	return (
 		<>
 			<div className='w-screen min-h-screen relative overflow-x-hidden'>
@@ -61,11 +37,10 @@ const Hero = ({ onVideoLoad }) => {
 					ref={videoFrameRef}
 					className='relative w-screen h-dvh z-10 overflow-hidden rounded-lg bg-blue-75'>
 					<video
-						src={videos[currentVideo]}
+						src='/videos/hero.mp4'
 						autoPlay
 						muted
-						onLoadedData={handleVideoLoad}
-						onEnded={handleVideoEnded}
+						loop
 						className='absolute top-0 left-0 size-full object-center object-cover'
 					/>
 

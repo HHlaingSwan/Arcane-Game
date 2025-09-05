@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "./components/NavBar";
 import About from "./components/About";
 import Hero from "./components/Hero";
@@ -9,11 +9,11 @@ import Contact from "./components/Contact";
 const App = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
-	const handleVideoLoad = () => {
-		if (isLoading) {
+	useEffect(() => {
+		setTimeout(() => {
 			setIsLoading(false);
-		}
-	};
+		}, 2500);
+	}, []);
 
 	return (
 		<>
@@ -28,7 +28,7 @@ const App = () => {
 			) : (
 				<main className='w-screen min-h-screen relative overflow-x-hidden'>
 					<NavBar />
-					<Hero onVideoLoad={handleVideoLoad} />
+					<Hero />
 					<About />
 					<Feature />
 					<Story />
