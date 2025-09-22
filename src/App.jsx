@@ -27,7 +27,7 @@ const App = () => {
 				</div>
 			) : (
 				<main className='w-screen min-h-screen relative overflow-x-hidden'>
-					<NavBar />
+					{/* <NavBar /> */}
 					<Hero />
 					<About />
 					<Feature />

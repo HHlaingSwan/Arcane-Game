@@ -1,74 +1,129 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import ButtonIcon from "./ButtonIcon";
 import { FaLocationArrow } from "react-icons/fa";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/all";
+import MainVideo from "../asset/main.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
 	const videoFrameRef = useRef(null);
+	const containerRef = useRef(null);
 
-	useEffect(() => {
-		const videoFrame = videoFrameRef.current;
+	// Using useGSAP for better React 18+ compatibility and cleanup
+	useGSAP(
+		() => {
+			// Video starts fully visible and shrinks to a circle on scroll
+			gsap.set(videoFrameRef.current, {
+				clipPath: "circle(75% at 50% 50%)",
+			});
 
-		gsap.set(videoFrame, {
-			clipPath: "polygon(14% 0%, 72% 0%, 90% 90%, 0% 100%)",
-			borderRadius: "0 0 40% 10%",
-		});
+			gsap.to(videoFrameRef.current, {
+				clipPath: "circle(20% at 90% 90%)", // Shrink to bottom-right
+				ease: "power2.inOut",
+				scrollTrigger: {
+					trigger: containerRef.current,
+					start: "top top",
+					end: "bottom top",
+					scrub: 1,
+				},
+			});
 
-		gsap.from(videoFrame, {
-			clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-			borderRadius: "0 0 0 0",
-			ease: "power1.inOut",
-			scrollTrigger: {
-				trigger: videoFrame,
-				start: "center center",
-				end: "bottom center",
-				scrub: true,
-			},
-		});
-	}, []);
+			// Animate in the title characters
+			gsap.from(".hero-char", {
+				opacity: 0,
+				y: 80,
+				rotateX: -90,
+				duration: 0.8,
+				stagger: 0.05,
+				delay: 0.5,
+				ease: "power3.out",
+			});
+
+			// Animate in the subtitle and button
+			gsap.from(["#hero-subtitle", "#hero-button"], {
+				opacity: 0,
+				filter: "blur(10px)",
+				y: 20,
+				duration: 1,
+				stagger: 0.2,
+				delay: 0.8, // Stagger after the title starts animating
+				ease: "power2.out",
+			});
+
+			// Animate out the hero content as the circle shrinks
+			gsap.to("#hero-content", {
+				opacity: 0,
+				ease: "power1.inOut",
+				scrollTrigger: {
+					trigger: containerRef.current,
+					start: "top top",
+					end: "center top",
+					scrub: 1,
+				},
+			});
+		},
+		{ scope: containerRef }
+	);
 
 	return (
-		<>
-			<div className='w-screen min-h-screen relative overflow-x-hidden'>
+		<div
+			ref={containerRef}
+			className='w-full h-[150vh] relative overflow-x-hidden'>
+			<div className='sticky top-0 h-screen w-full'>
 				<div
 					ref={videoFrameRef}
-					className='relative w-screen h-dvh z-10 overflow-hidden rounded-lg bg-blue-75'>
+					className='relative size-full z-10 overflow-hidden bg-blue-75'>
 					<video
-						src='/videos/hero.mp4'
+						src={MainVideo}
 						autoPlay
 						muted
 						loop
 						className='absolute top-0 left-0 size-full object-center object-cover'
 					/>
 
-					<h1 className='special-font absolute bottom-5 right-5 hero-heading z-40 text-blue-75'>
-						G<b>A</b>MING
-					</h1>
-					<div className='absolute  top-0 left-0 size-full z-40'>
-						<div className='mt-24 px-5 sm:px-10'>
-							<h1 className='special-font  hero-heading text-blue-100'>
-								<b>A</b>RCANE
+					<div className='absolute top-0 left-0 size-full z-20 bg-black/40' />
+					{/* Added an overlay for text readability */}
+
+					<div
+						id='hero-content'
+						className='absolute inset-0 z-30'>
+						{/* Top-left content */}
+						<div className='absolute top-8 left-8 sm:top-16 sm:left-16'>
+							<h1 className='special-font hero-heading text-blue-100 flex overflow-hidden py-2'>
+								{"ARCANE".split("").map((char, index) => (
+									<span
+										key={index}
+										className='hero-char'
+										style={{ display: "inline-block" }}>
+										{index === 0 ? <b>{char}</b> : char}
+									</span>
+								))}
 							</h1>
-							<p className='mb-5 max-w-96 font-robert-regular md:text-lg lg:text-2xl text-blue-100'>
+						</div>
+
+						{/* Bottom-right content */}
+						<div className='absolute bottom-8 right-8 sm:bottom-16 sm:right-16 text-right flex flex-col items-end'>
+							<p
+								id='hero-subtitle'
+								className='mb-8 max-w-sm font-robert-regular text-base lg:text-xl text-blue-100/90'>
 								Enter The Future Of Gaming <br />
 								With The Power Of Magic
 							</p>
-							<ButtonIcon
-								title='Get Started'
-								icon={<FaLocationArrow />}
-								containerClass='bg-yellow-100'
-							/>
+							<div id='hero-button'>
+								<ButtonIcon
+									title='Explore The World'
+									icon={<FaLocationArrow />}
+									containerClass='bg-yellow-100 text-black'
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
-				<h1 className='special-font absolute bottom-3 right-5 hero-heading  text-black'>
-					G<b>A</b>MING
-				</h1>
 			</div>
-		</>
+		</div>
 	);
 };
 

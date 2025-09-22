@@ -1,79 +1,76 @@
 import React, { useRef } from "react";
 import AnimatedTitle from "./AnimatedTitle";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/all";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Story = () => {
-	const frameRef = useRef(null);
+	const containerRef = useRef(null);
 
-	const handleMouseMove = (e) => {
-		const { clientX, clientY } = e;
-		const element = frameRef.current;
-
-		if (!element) return;
-
-		const rect = element.getBoundingClientRect();
-		const xPos = clientX - rect.left;
-		const yPos = clientY - rect.top;
-
-		const centerX = rect.width / 2;
-		const centerY = rect.height / 2;
-
-		const rotateX = ((yPos - centerY) / centerY) * -10;
-		const rotateY = ((xPos - centerX) / centerX) * 10;
-
-		gsap.to(element, {
-			duration: 0.3,
-			rotateX,
-			rotateY,
-			transformPerspective: 500,
-			ease: "power1.inOut",
-		});
-	};
-	const handleMouseLeave = () => {
-		const element = frameRef.current;
-
-		if (element) {
-			gsap.to(element, {
-				duration: 0.3,
-				rotateX: 0,
-				rotateY: 0,
-				ease: "power1.inOut",
+	useGSAP(
+		() => {
+			// Parallax effect for the image
+			gsap.to(".story-image-container", {
+				y: "-20vh",
+				ease: "none",
+				scrollTrigger: {
+					trigger: containerRef.current,
+					start: "top bottom",
+					end: "bottom top",
+					scrub: true,
+				},
 			});
-		}
-	};
+
+			// Animate in the text content
+			gsap.from(".story-text-content > *", {
+				opacity: 0,
+				y: 50,
+				stagger: 0.2,
+				duration: 1,
+				ease: "power3.out",
+				scrollTrigger: {
+					trigger: ".story-text-content",
+					start: "top 80%",
+					toggleActions: "play none none none",
+				},
+			});
+		},
+		{ scope: containerRef }
+	);
 
 	return (
-		<>
-			<section className='bg-black text-blue-50 min-h-dvh w-screen'>
-				<div className='flex size-full flex-col items-center py-10 pb-24 '>
-					<h1 className='font-general uppercase text-sm md:text-[18px]'>
-						Dream! As Much As You Can
-					</h1>
+		<section
+			id='story'
+			ref={containerRef}
+			className='bg-black text-blue-50 min-h-dvh w-full py-20 md:py-32 overflow-hidden'>
+			<div className='container mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center px-5 sm:px-10'>
+				{/* Left Column: Image with Parallax */}
+				<div className='story-image-container h-[60vh] md:h-[80vh] w-full overflow-hidden rounded-2xl'>
+					<img
+						src='img/entrance.webp'
+						alt='entrance'
+						className='size-full object-cover object-center'
+					/>
 				</div>
-				<div className='relative size-full '>
+				{/* Right Column: Text Content */}
+				<div className='story-text-content md:text-right md:flex md:flex-col md:items-end'>
+					<h2 className='font-general uppercase text-sm md:text-[18px] mb-4'>
+						Dream! As Much As You Can
+					</h2>
 					<AnimatedTitle
 						title='Beyond The Maddness of Multiversese'
-						containerClass=' text-3xl md:text-6xl special-font  pointer-events-none mix-blend-difference relative z-10'
+						containerClass='text-3xl md:text-6xl special-font mb-8'
 					/>
-					<div className='story-img-container'>
-						<div className='story-img-mask'>
-							<div className='story-img-content'>
-								<img
-									ref={frameRef}
-									onMouseMove={handleMouseMove}
-									onMouseLeave={handleMouseLeave}
-									onMouseUp={handleMouseLeave}
-									onMouseEnter={handleMouseLeave}
-									src='img/entrance.webp'
-									alt='entrance'
-									className='object-contain  '
-								/>
-							</div>
-						</div>
-					</div>
+					<p className='font-robert-regular max-w-md opacity-80'>
+						Discover a world where every corner holds a new adventure, and every
+						challenge brings a greater reward. The fate of dimensions rests in
+						your hands.
+					</p>
 				</div>
-			</section>
-		</>
+			</div>
+		</section>
 	);
 };
 
